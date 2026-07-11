@@ -10,119 +10,160 @@ $result = mysqli_query($mysqli, "SELECT * FROM alat ORDER BY id DESC");
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sim Rs - Data Alat Medis</title>
     <style>
-        /* 1. MENGUBAH WARNA BACKGROUND HALAMAN */
+        /* 1. BACKGROUND GRADASI TERANG DAN MENARIK */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
-            padding: 30px; 
-            background-color: #f0f4f8; /* Warna background abu-abu kebiruan yang lembut */
+            padding: 40px 20px; 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+            background-attachment: fixed;
             color: #333;
         }
 
+        /* 2. CONTAINER MODERN */
         .container {
             max-width: 90%;
             margin: 0 auto;
-            background: #ffffff; /* Kotak putih pembungkus konten */
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Efek bayangan halus */
+            background: rgba(255, 255, 255, 0.93); 
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+            backdrop-filter: blur(10px);
+        }
+
+        /* SIFAT HEADER DIBUAT BERJAJAR KIRI-KANAN (FLEXBOX) */
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e1e8ed;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         h2 {
-            color: #1a5f7a; /* Warna teks judul biru tua medis */
-            margin-top: 0;
-            font-size: 24px;
-            border-bottom: 2px solid #e1e8ed;
-            padding-bottom: 10px;
+            color: #1a5f7a; 
+            margin: 0;
+            font-size: 26px;
         }
 
-        /* 2. DESAIN TOMBOL TAMBAH BARU */
+        /* STYLING KOTAK ICON ALKES KANAN ATAS */
+        .alkes-icon-wrapper {
+            background-color: #e3fafc;
+            padding: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 3. DESAIN TOMBOL TAMBAH BARU */
         .btn-tambah { 
-            padding: 10px 20px; 
-            background-color: #00b4d8; /* Warna cyan/biru muda terang */
+            padding: 12px 24px; 
+            background-color: #00b4d8; 
             color: white; 
             text-decoration: none; 
-            border-radius: 5px; 
+            border-radius: 8px; 
             display: inline-block; 
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-weight: bold;
-            transition: background 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+            transition: all 0.3s ease;
         }
         .btn-tambah:hover { 
             background-color: #0096c7; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px rgba(0, 180, 216, 0.4);
         }
 
-        /* 3. DESAIN TABEL YANG LEBIH BERWARNA */
+        /* 4. DESAIN TABEL */
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 10px;
             background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden; /* Agar sudut tabel melengkung rapi */
+            border-radius: 10px;
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
 
-        /* Warna Header Tabel */
         .header { 
-            background-color: #1a5f7a; /* Mengganti orange ke biru medis profesional */
+            background-color: #1a5f7a; 
             color: white; 
             text-transform: uppercase;
             font-size: 14px;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.7px;
         }
 
         th, td { 
-            padding: 14px 16px; 
+            padding: 16px 20px; 
             text-align: left; 
         }
 
-        /* Garis tipis antar baris data */
         td {
             border-bottom: 1px solid #eef2f5;
+            font-size: 15px;
         }
 
-        /* Efek warna selang-seling (Zebra striping) pada baris data */
         tr:nth-child(even) { 
             background-color: #f8fafc; 
         }
 
-        /* Efek saat baris disorot kursor mouse (Hover effect) */
         tr:hover { 
-            background-color: #e3fafc; /* Warna sorotan cyan tipis */
+            background-color: #e3fafc; 
         }
 
-        /* 4. DESAIN TOMBOL AKSI (EDIT & DELETE) */
+        /* 5. DESAIN TOMBOL AKSI */
         .btn-aksi { 
             text-decoration: none; 
-            padding: 6px 12px; 
-            border-radius: 4px; 
+            padding: 6px 14px; 
+            border-radius: 6px; 
             color: white; 
             font-size: 13px;
             font-weight: bold;
             display: inline-block;
+            transition: background 0.2s ease;
         }
         .btn-edit { 
-            background-color: #38b000; /* Hijau cerah untuk edit */
+            background-color: #38b000; 
         }
         .btn-edit:hover {
             background-color: #007200;
         }
         .btn-delete { 
-            background-color: #ff4d4d; /* Merah cerah untuk delete */
+            background-color: #ff4d4d; 
+            margin-left: 5px;
         }
         .btn-delete:hover {
             background-color: #cc0000;
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <!-- Pembungkus halaman agar terlihat seperti aplikasi modern -->
     <div class="container">
 
-        <h2>Daftar Inventaris Data Alat Medis</h2>
+        <!-- KOTAK HEADER: JUDUL & ICON SVG MEDIS -->
+        <div class="header-wrapper">
+            <h2>Daftar Inventaris Data Alat Medis</h2>
+            
+            <!-- Menggunakan Kode SVG (Pasti Muncul Tanpa Internet) -->
+            <div class="alkes-icon-wrapper">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#1a5f7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+            </div>
+        </div>
 
         <!-- Tombol Tambah Data -->
         <a href="add.php" class="btn-tambah">+ Tambah Alat Baru</a>
@@ -134,7 +175,7 @@ $result = mysqli_query($mysqli, "SELECT * FROM alat ORDER BY id DESC");
                 <th>Tahun</th>
                 <th>Merek</th>
                 <th>Lokasi</th>
-                <th style="width: 150px;">Aksi</th>
+                <th style="width: 160px;">Aksi</th>
             </tr>
             <?php  
             while($user_data = mysqli_fetch_array($result)) {         
@@ -151,6 +192,11 @@ $result = mysqli_query($mysqli, "SELECT * FROM alat ORDER BY id DESC");
             }
             ?>
         </table>
+
+        <!-- Footer Identitas Nama -->
+        <div class="footer-text">
+            CRUD PEMROGRAMAN WEB : Azwar Rangga Arasaf 2202050517
+        </div>
 
     </div>
 
